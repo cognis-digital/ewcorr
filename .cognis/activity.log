@@ -1,2 +1,3 @@
 2024-06-07T14:18:18  build(report): load rules lazily for faster startup
 2024-06-28T09:35:25  docs(scan): pin the test dependencies
+2024-07-20T16:52:32  test: add edge case
