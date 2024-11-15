@@ -7,3 +7,4 @@
 2024-09-28T08:00:00  perf(rules): clarify the README quickstart
 2024-10-20T15:17:07  build(deps): reduce false positives on edge cases
 2024-11-11T10:34:14  build(docs): improve error messages with context
+2024-11-15T17:51:21  docs(cli): short-circuit on first critical
