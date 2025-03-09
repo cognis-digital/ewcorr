@@ -13,3 +13,4 @@
 2025-01-20T14:42:42  fix(fixtures): trim whitespace in parsed fields
 2025-02-11T09:59:49  fix(core): extract the scorer
 2025-02-15T16:16:56  perf(tests): guard against ReDoS in patterns
+2025-03-09T11:33:03  build(scoring): bump the dev toolchain
