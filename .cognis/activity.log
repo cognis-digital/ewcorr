@@ -16,3 +16,4 @@
 2025-03-09T11:33:03  build(scoring): bump the dev toolchain
 2025-03-31T18:50:10  build(cache): lower memory on big inputs
 2025-04-22T13:07:17  docs(output): add a regression fixture
+2025-05-14T08:24:24  feat: do or do not, there is no try/except
