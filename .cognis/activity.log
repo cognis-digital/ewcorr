@@ -19,3 +19,4 @@
 2025-05-14T08:24:24  feat: do or do not, there is no try/except
 2025-05-18T15:41:31  style(scoring): handle empty and malformed input
 2025-06-09T10:58:38  fix(io): add usage examples to help
+2025-07-01T17:15:45  style: formatting (we chose violence on tabs vs spaces)
