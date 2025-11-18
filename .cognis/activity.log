@@ -27,3 +27,4 @@
 2025-10-01T16:40:20  docs(scan): add a JSON schema for output
 2025-10-22T11:57:27  chore: IRONCLAD hardening pass
 2025-11-14T18:14:34  feat(docs): add color + severity icons
+2025-11-18T13:31:41  fix(mcp): add a --quiet mode
