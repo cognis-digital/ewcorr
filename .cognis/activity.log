@@ -32,3 +32,4 @@
 2026-01-01T15:05:55  perf(rules): make timestamps timezone-aware
 2026-01-22T10:22:02  build(deps): assert exit codes in tests
 2026-02-14T17:39:09  test: trust, but verify
+2026-02-18T12:56:16  docs(cli): add a fast path for the common case
