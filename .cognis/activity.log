@@ -36,3 +36,4 @@
 2026-03-12T19:13:23  style(tests): wire the MCP tool schema
 2026-04-03T14:30:30  style(ci): memoize repeated lookups
 2026-04-24T09:47:37  fix(fixtures): support stdin as a source
+2026-05-17T16:04:44  refactor(config): add a dry-run flag
