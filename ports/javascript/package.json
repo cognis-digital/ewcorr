@@ -1,0 +1,10 @@
+{
+  "name": "@cognis/ewcorr",
+  "version": "0.2.0",
+  "description": "JavaScript port of ewcorr (Cognis Neural Suite)",
+  "bin": {
+    "ewcorr": "index.js"
+  },
+  "license": "LicenseRef-COCL-1.0",
+  "type": "module"
+}
