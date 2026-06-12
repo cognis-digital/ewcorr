@@ -16,7 +16,7 @@
 </div>
 
 ```bash
-pip install cognis-ewcorr
+pip install "git+https://github.com/cognis-digital/ewcorr.git"
 ewcorr scan .            # → prioritized findings in seconds
 ```
 
@@ -48,7 +48,7 @@ Correlate electronic-warfare event logs by time/frequency/bearing to cluster emi
 ## Quick start
 
 ```bash
-pip install cognis-ewcorr
+pip install "git+https://github.com/cognis-digital/ewcorr.git"
 ewcorr --version
 ewcorr scan .                       # scan current project
 ewcorr scan . --format json         # machine-readable

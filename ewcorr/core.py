@@ -17,11 +17,10 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 import math
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from typing import Iterable, Sequence
+from typing import Sequence
 
 
 class EWCorrError(Exception):
