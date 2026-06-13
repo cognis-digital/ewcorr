@@ -20,6 +20,40 @@ pip install cognis-ewcorr
 ewcorr scan .            # → prioritized findings in seconds
 ```
 
+## Usage — step by step
+
+1. **Install** the CLI:
+
+   ```bash
+   pipx install "git+https://github.com/cognis-digital/ewcorr.git"
+   ```
+
+2. **Correlate** an observation log into distinct emitters (primary command). Pass a CSV path or `-` for stdin:
+
+   ```bash
+   ewcorr correlate detections.csv
+   cat detections.csv | ewcorr correlate -
+   ```
+
+3. **Tune the clustering** — link detections within a time window, frequency tolerance, and bearing tolerance:
+
+   ```bash
+   ewcorr correlate detections.csv \
+     --time-window 45 --freq-tol 0.25 --bearing-tol 3
+   ```
+
+4. **Read the output** — table by default, or JSON for downstream tools; drop sparse emitters with `--min-hits`:
+
+   ```bash
+   ewcorr --format json correlate detections.csv --min-hits 3 > emitters.json
+   ```
+
+5. **Automate in a pipeline** — count correlated emitters from a feed:
+
+   ```bash
+   ewcorr --format json correlate feed.csv | jq 'length'
+   ```
+
 ## Contents
 
 - [Why ewcorr?](#why) · [Features](#features) · [Quick start](#quick-start) · [Example](#example) · [Architecture](#architecture) · [AI stack](#ai-stack) · [How it compares](#how-it-compares) · [Integrations](#integrations) · [Install anywhere](#install-anywhere) · [Related](#related) · [Contributing](#contributing)
