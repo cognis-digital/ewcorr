@@ -18,9 +18,24 @@ from __future__ import annotations
 import csv
 import io
 import math
+import os
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from typing import Sequence
+
+# ---------------------------------------------------------------------------
+# Tool identity — read from the VERSION file at the package root so that
+# pyproject.toml, VERSION, and runtime metadata all stay in sync.
+# ---------------------------------------------------------------------------
+TOOL_NAME = "ewcorr"
+try:
+    _VERSION_FILE = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "VERSION"
+    )
+    with open(_VERSION_FILE, encoding="utf-8") as _vf:
+        TOOL_VERSION = _vf.read().strip()
+except OSError:
+    TOOL_VERSION = "0.1.0"
 
 
 class EWCorrError(Exception):
@@ -74,10 +89,14 @@ class EmitterCluster:
 
     @property
     def first_seen(self) -> float:
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         return min(o.timestamp for o in self.observations)
 
     @property
     def last_seen(self) -> float:
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         return max(o.timestamp for o in self.observations)
 
     @property
@@ -86,16 +105,22 @@ class EmitterCluster:
 
     @property
     def freq_center_mhz(self) -> float:
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         return sum(o.freq_mhz for o in self.observations) / self.count
 
     @property
     def freq_span_mhz(self) -> float:
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         fs = [o.freq_mhz for o in self.observations]
         return max(fs) - min(fs)
 
     @property
     def bearing_mean_deg(self) -> float:
         """Circular mean of bearings, returned in [0, 360)."""
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         sx = sum(math.sin(math.radians(o.bearing_deg)) for o in self.observations)
         sy = sum(math.cos(math.radians(o.bearing_deg)) for o in self.observations)
         ang = math.degrees(math.atan2(sx, sy))
@@ -104,6 +129,8 @@ class EmitterCluster:
     @property
     def bearing_spread_deg(self) -> float:
         """Max circular deviation of any bearing from the circular mean."""
+        if not self.observations:
+            raise EWCorrError(f"cluster {self.emitter_id!r} has no observations")
         mean = self.bearing_mean_deg
         return max(_circular_delta(o.bearing_deg, mean) for o in self.observations)
 
@@ -148,7 +175,11 @@ def _circular_delta(a: float, b: float) -> float:
 
 
 def _iso(epoch: float) -> str:
-    return datetime.fromtimestamp(epoch, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+    return (
+        datetime.fromtimestamp(epoch, tz=timezone.utc)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
 
 
 def _parse_time(value: str) -> float:
@@ -204,7 +235,9 @@ def parse_observations(text: str) -> list[Observation]:
         raw_time = (row.get(cols["time"]) or "").strip()
         ts = _parse_time(raw_time)
         freq = _to_float(row.get(cols["freq_mhz"], ""), f"freq_mhz (line {lineno})")
-        bearing = _to_float(row.get(cols["bearing_deg"], ""), f"bearing_deg (line {lineno})")
+        bearing = _to_float(
+            row.get(cols["bearing_deg"], ""), f"bearing_deg (line {lineno})"
+        )
         if freq <= 0:
             raise EWCorrError(f"line {lineno}: freq_mhz must be positive")
         bearing = bearing % 360.0
@@ -272,7 +305,10 @@ def correlate(
     frontier_start = 0
     for i in range(n):
         # Advance the frontier past observations now outside the time window.
-        while frontier_start < i and obs[i].timestamp - obs[frontier_start].timestamp > cfg.time_window_s:
+        while (
+            frontier_start < i
+            and obs[i].timestamp - obs[frontier_start].timestamp > cfg.time_window_s
+        ):
             frontier_start += 1
         for j in range(frontier_start, i):
             if _linked(obs[i], obs[j], cfg):

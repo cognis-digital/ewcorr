@@ -31,7 +31,10 @@ from .core import (
 
 def _read_input(path: str) -> str:
     if path == "-":
-        return sys.stdin.read()
+        try:
+            return sys.stdin.read()
+        except UnicodeDecodeError as exc:
+            raise OSError(f"stdin contains non-UTF-8 data: {exc}") from exc
     with open(path, "r", encoding="utf-8") as fh:
         return fh.read()
 
@@ -63,8 +66,10 @@ def _render_table(report: dict) -> str:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog=TOOL_NAME,
-        description="Correlate passive EW/ELINT event logs into candidate emitter clusters "
-        "(defensive analysis / monitoring only).",
+        description=(
+            "Correlate passive EW/ELINT event logs into candidate emitter clusters "
+            "(defensive analysis / monitoring only)."
+        ),
     )
     p.add_argument("--version", action="version", version=f"{TOOL_NAME} {TOOL_VERSION}")
     p.add_argument(
@@ -83,8 +88,10 @@ def build_parser() -> argparse.ArgumentParser:
                    help="frequency tolerance in MHz (default: 0.5)")
     c.add_argument("--bearing-tol", type=float, default=5.0,
                    help="bearing tolerance in degrees (default: 5)")
-    c.add_argument("--min-hits", type=int, default=1,
-                   help="drop emitters with fewer than N observations (default: 1)")
+    c.add_argument(
+        "--min-hits", type=int, default=1, metavar="N",
+        help="drop emitters with fewer than N observations (default: 1; min: 1)",
+    )
     return p
 
 
@@ -93,6 +100,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "correlate":
+        if args.min_hits < 1:
+            print("error: --min-hits must be at least 1", file=sys.stderr)
+            return 2
         try:
             text = _read_input(args.file)
             observations = parse_observations(text)
@@ -107,6 +117,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = summarize(clusters)
         except FileNotFoundError:
             print(f"error: file not found: {args.file}", file=sys.stderr)
+            return 2
+        except IsADirectoryError:
+            print(
+                f"error: path is a directory, not a file: {args.file}",
+                file=sys.stderr,
+            )
+            return 2
+        except PermissionError:
+            print(f"error: permission denied: {args.file}", file=sys.stderr)
+            return 2
+        except UnicodeDecodeError as exc:
+            print(
+                f"error: file is not valid UTF-8: {args.file}: {exc}",
+                file=sys.stderr,
+            )
+            return 2
+        except OSError as exc:
+            print(f"error: cannot read input: {exc}", file=sys.stderr)
             return 2
         except EWCorrError as exc:
             print(f"error: {exc}", file=sys.stderr)

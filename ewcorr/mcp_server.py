@@ -15,7 +15,10 @@ def serve() -> int:
 
     @app.tool()
     def ewcorr_scan(target: str) -> str:
-        """Correlate electronic-warfare event logs by time/frequency/bearing to cluster emitters.. Returns JSON findings."""
+        """Correlate EW/ELINT event logs by time/frequency/bearing.
+
+        Clusters emitters and returns JSON findings.
+        """
         return to_json(scan(target))
 
     app.run()
