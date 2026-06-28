@@ -1,0 +1,3 @@
+$ ewcorr-emit --version
+
+ewcorr 0.1.0

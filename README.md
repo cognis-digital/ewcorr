@@ -20,6 +20,75 @@ pip install cognis-ewcorr
 ewcorr scan .            # → prioritized findings in seconds
 ```
 
+
+<!-- cognis:example:start -->
+## 🔎 Example output
+
+Real, reproducible output from the tool — runs offline:
+
+```console
+$ ewcorr-emit --version
+ewcorr 0.1.0
+```
+
+```console
+$ ewcorr-emit --help
+usage: ewcorr [-h] [--version] [--format {table,json}] {correlate} ...
+
+Correlate passive EW/ELINT event logs into candidate emitter clusters
+(defensive analysis / monitoring only).
+
+positional arguments:
+  {correlate}
+    correlate           cluster an observation log into emitters
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --format {table,json}
+                        output format (default: table)
+```
+
+> Blocks above are real `ewcorr` output — reproduce them from a clone.
+
+**Sample result format** _(illustrative values — run on your own data for real findings):_
+
+```
+{
+"timestamp": "2023-02-16T14:30:00Z",
+"platform": {
+"type": "STIX",
+"url": "https://example.com/stix",
+"token": "my_stix_token"
+},
+"findings": [
+{
+"id": "1",
+"name": "Suspicious DNS Query",
+"description": "DNS query for suspicious domain",
+"indicators": [
+{
+"type": "dns",
+"value": "example.com"
+}
+]
+},
+{
+"id": "2",
+"name": "Malware Detection",
+"description": "Detection of malware on system",
+"indicators": [
+{
+"type": "file",
+"value": "/path/to/malware.exe"
+}
+]
+}
+]
+```
+
+<!-- cognis:example:end -->
+
 ## Usage — step by step
 
 1. **Install** the CLI:

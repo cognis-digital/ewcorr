@@ -1,0 +1,16 @@
+$ ewcorr-emit --help
+
+usage: ewcorr [-h] [--version] [--format {table,json}] {correlate} ...
+
+Correlate passive EW/ELINT event logs into candidate emitter clusters
+(defensive analysis / monitoring only).
+
+positional arguments:
+  {correlate}
+    correlate           cluster an observation log into emitters
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --format {table,json}
+                        output format (default: table)
